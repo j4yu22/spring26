@@ -1,0 +1,221 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Client Report - Project 0: Introduction\"\n",
+        "subtitle: \"Course DS 250\"\n",
+        "author: \"Jay Underwood\"\n",
+        "format:\n",
+        "  html:\n",
+        "    self-contained: true\n",
+        "    page-layout: full\n",
+        "    title-block-banner: true\n",
+        "    toc: true\n",
+        "    toc-depth: 3\n",
+        "    toc-location: body\n",
+        "    number-sections: false\n",
+        "    html-math-method: katex\n",
+        "    code-fold: true\n",
+        "    code-summary: \"Show the code\"\n",
+        "    code-overflow: wrap\n",
+        "    code-copy: hover\n",
+        "    code-tools:\n",
+        "        source: false\n",
+        "        toggle: true\n",
+        "        caption: See code\n",
+        "execute: \n",
+        "  warning: false\n",
+        "    \n",
+        "---"
+      ],
+      "id": "97b17f25"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import polars as pl\n",
+        "import numpy as np\n",
+        "from lets_plot import *\n",
+        "\n",
+        "LetsPlot.setup_html(isolated_frame=True)"
+      ],
+      "id": "b886ce2a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html\n",
+        "\n",
+        "# Include and execute your code here\n",
+        "from palmerpenguins import load_penguins\n",
+        "df = load_penguins()"
+      ],
+      "id": "1fdf6fac",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## QUESTION|TASK 1\n",
+        "\n",
+        "__Include the tables created from [PY4DS: CH2 Data Visualization](https://aeturrell.github.io/python4DS/data-visualise.html) used to create the above chart (Hint: copy the code from 2.2.1. The penguins data frame and paste each in the cells below)__\n"
+      ],
+      "id": "204ee627"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "penguins = load_penguins()\n",
+        "penguins\n"
+      ],
+      "id": "499797e9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "_include figures in chunks and discuss your findings in the figure._"
+      ],
+      "id": "08cc19a9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "penguins.head()"
+      ],
+      "id": "f0006a42",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## QUESTION|TASK 2\n",
+        "\n",
+        "__Recreate the example charts from [PY4DS: CH2 Data Visualization](https://aeturrell.github.io/python4DS/data-visualise.html) of the textbook. (Hint: copy the chart code from 2.2.3. Creating a plot, one plot for each cell below)__\n"
+      ],
+      "id": "9dbc0937"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "(\n",
+        "    ggplot(data=penguins, mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\"))\n",
+        "    + geom_point()\n",
+        ")\n"
+      ],
+      "id": "8de89c4a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "_include figures in chunks and discuss your findings in the figure._"
+      ],
+      "id": "ac4ecaac"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "(\n",
+        "    ggplot(\n",
+        "        data=penguins,\n",
+        "        mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\", color=\"species\"),\n",
+        "    )\n",
+        "    + geom_point()\n",
+        ")"
+      ],
+      "id": "ca004017",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "(\n",
+        "    ggplot(\n",
+        "        data=penguins,\n",
+        "        mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\", color=\"species\"),\n",
+        "    )\n",
+        "    + geom_point()\n",
+        "    + geom_smooth(method=\"lm\")\n",
+        ")"
+      ],
+      "id": "18fd07ae",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "(\n",
+        "    ggplot(data=penguins, mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\"))\n",
+        "    + geom_point(mapping=aes(color=\"species\"))\n",
+        "    + geom_smooth(method=\"lm\")\n",
+        ")\n"
+      ],
+      "id": "e79f1a38",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Include and execute your code here\n",
+        "(\n",
+        "    ggplot(data=penguins, mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\"))\n",
+        "    + geom_point(aes(color=\"species\", shape=\"species\"))\n",
+        "    + geom_smooth(method=\"lm\")\n",
+        "    + labs(\n",
+        "        title=\"Body mass and flipper length\",\n",
+        "        subtitle=\"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n",
+        "        x=\"Flipper length (mm)\",\n",
+        "        y=\"Body mass (g)\",\n",
+        "        color=\"Species\",\n",
+        "        shape=\"Species\",\n",
+        "    )\n",
+        ")"
+      ],
+      "id": "215ad360",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "O:\\Coding\\python\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
