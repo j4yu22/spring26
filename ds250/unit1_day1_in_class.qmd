@@ -1,0 +1,101 @@
+title: "UNIT 1 Day 1"
+format: html
+---
+
+This is a test!
+
+# Header
+
+## sub-header
+
+#### header level4
+
+__Bolded Text__
+
+*asterisk*
+
+What about this stuff?
+
+```{python}
+print("Hello World")
+```
+
+## Typically at the top of the file, common way to import all the libraries.
+
+```{python}
+import polars as pl
+import numpy as np
+from lets_plot import *
+LetsPlot.setup_html(isolated_frame=True)
+
+
+```
+
+# what is a dataframe?
+
+
+```{python}
+df = pl.DataFrame({
+    "a": [4, 5, 6],
+    "b": [7, 8, 9],
+    "c": [10, 11, 12]
+})
+df
+```
+
+Can you tell what its doing?
+
+
+```{python}
+df = pl.from_numpy(
+    np.array([
+        [4, 5, 6],
+        [7, 8, 9],
+        [10, 11, 12]
+    ]),
+    schema=['a', 'b', 'c']
+)
+df
+```
+
+
+```{python}
+import polars as pl
+
+url = "https://byui-cse.github.io/cse110-course/lesson11/life-expectancy.csv"
+df = pl.read_csv(url)
+```
+
+
+```{python}
+df
+```
+
+
+# Subset parts of data
+
+
+```{python}
+df['Entity', 'Code', 'Year']
+df[3:5]
+```
+
+## rename a column
+
+
+```{python}
+df = df.rename({'Life expectancy (years)':'life_yrs'})
+df
+```
+
+```{python}
+df.filter(pl.col('Year') > 1999)
+df.filter(pl.col('Year') <= 2000), pl.col('Year') >= 2000
+```
+
+
+```{python}
+# drop function
+df.drop(pl.col('Code'))
+df
+```

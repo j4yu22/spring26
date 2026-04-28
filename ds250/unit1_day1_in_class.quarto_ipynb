@@ -1,0 +1,69 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "title: \"UNIT 1 Day 1\"\n",
+        "format: html\n",
+        "---\n",
+        "\n",
+        "This is a test!\n",
+        "\n",
+        "# Header\n",
+        "\n",
+        "## sub-header\n",
+        "\n",
+        "#### header level4\n",
+        "\n",
+        "__Bolded Text__\n",
+        "\n",
+        "*asterisk*\n",
+        "\n",
+        "What about this stuff?"
+      ],
+      "id": "30349a0d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(\"Hello World\")"
+      ],
+      "id": "59c2a378",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Typically at the top of the file, common awy to import all the libraries."
+      ],
+      "id": "17a836f8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import polars as pl\n",
+        "import numpy as np\n",
+        "from lets_plot import *\n",
+        "LetsPlot.setup_html(isolated_frame=True)\n"
+      ],
+      "id": "eb9db894",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "O:\\Coding\\python\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
