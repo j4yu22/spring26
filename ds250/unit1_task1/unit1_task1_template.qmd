@@ -1,0 +1,125 @@
+---
+title: "Client Report - Exploring Names"
+subtitle: "Unit 1 Task 1"
+author: "Jay Underwood"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+```{python}
+import polars as pl
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+```
+
+```{python}
+# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html
+
+# Include and execute your code here
+df = pl.read_csv("https://posit.byui.edu/content/0d43d66f-d3b7-4c43-8c36-52e3ed69e7f1/names_year_csv.csv")
+
+```
+
+## QUESTION 1
+
+__What was the earliest year that the name ‘Felisha’ was used?__
+
+1964 was the earliest year. I filtered the data by just the name 'Felisha', and then found the smallest year in that data.
+
+```{python}
+# Q1
+earliest_felisha = (
+  df
+  .filter(pl.col("name") == "Felisha")
+  .select(pl.col("year").min())
+)
+
+earliest_felisha
+
+```
+
+
+## QUESTION 2
+
+__What year had the most babies named 'David'? How many babies were named 'David' that year?__
+
+1955 had the most babies named David, with 86389 babies total, according to the data. I filtered the data down to just the name David, then sorted by the total column, descending. Then I just took the top row, so all the state counts would still be visible.
+
+```{python}
+# Q2
+david_year = (
+  df
+  .filter(pl.col("name") == "David")
+  .sort(pl.col("Total"), descending=True)
+  .head(1)
+)
+
+david_year
+```
+
+
+## QUESTION 3
+
+__What year did your name hit its peak? How many babies were named your name in that year?__
+
+1960 had my name the most, with 5389. The process was literally the exact same as question 2, but I renamed a variable and changed the name I was looking for.
+
+```{python}
+# Q3
+jay_year = (
+  df
+  .filter(pl.col("name") == "Jay")
+  .sort(pl.col("Total"), descending=True)
+  .head(1)
+)
+
+jay_year
+```
+
+
+## QUESTION 4
+
+__In the most recent year, what was the most common female name in Utah?__ 
+
+Olivia was the most common female name in Utah in 2024. I set a couple variables, one was to find the most recent year, and the other was to easily get rid of all the other states and total. After that I filtered down to the recent year, sorted by Utah, and took the top 10 since Olivia was hidden behind the dots by default.
+
+```{python}
+# Q5
+recent_year = df.select(pl.col("year").max()).item()
+
+droppable_columns = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX","VA","VT","WA","WI","WV","WY", "Total"]
+
+name = (
+  df
+  .filter(pl.col("year") == recent_year)
+  .drop(droppable_columns)
+  .sort(pl.col("UT"), descending=True)
+  .head(10)
+)
+
+name
+```
+
+
+---
