@@ -1,0 +1,144 @@
+---
+title: "Client Report - What's in a Name?"
+subtitle: "Unit 1 Task 2"
+author: "Jay Underwood"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+```{python}
+import polars as pl
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+```
+
+```{python}
+# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html
+
+# Include and execute your code here
+df = pl.read_csv("https://posit.byui.edu/content/0d43d66f-d3b7-4c43-8c36-52e3ed69e7f1/names_year_csv.csv")
+
+```
+
+## QUESTION 1
+
+<!-- Make sure at least one of your charts includes reference marks!! -->
+
+__How does your name at your birth year compare to its use historically? Your must provide a chart. The years labels on your charts should not include a comma.__ 
+
+In my birth year, which was 2002, there were 792 babies named Jay. The name was most popular in 1960 with 5389 babies. It rapidly climbed in popularity from 1940 to 1960, then declined sharply until about 1980 according to the data.
+
+```{python}
+# Q1
+my_name = "Jay"
+birth_year = 2002
+
+name_history = (
+    df
+    .filter(pl.col("name") == my_name)
+    .select(["year", "Total"])
+    .sort("year")
+)
+
+birth_year_point = (
+    name_history
+    .filter(pl.col("year") == birth_year)
+)
+
+(
+    ggplot(name_history, aes(x="year", y="Total"))
+    + geom_line()
+    + geom_point(data=birth_year_point, mapping=aes(x="year", y="Total"), size=5)
+    + labs(
+        title=f"Historical Use of the Name {my_name}",
+        subtitle=f"Highlighted point shows {my_name} in {birth_year}",
+        x="Year",
+        y="Babies Named " + my_name
+    )
+    + scale_x_continuous(format=".0f")
+)
+```
+
+
+## QUESTION 2
+
+__Think of a unique name from a famous movie. Plot the usage of that name and see how changes line up with the movie release. Does it look like the movie had an effect on usage?__  
+
+The name 'Leia' was extremely uncommon before 1977, when Star Wars episode 4 released. After that there was a relative spike for about 10 years, but it wasn't until about 2005. 2005 corresponds to when the final episode of Star Wars released with episode 3. After 2005 the name grew significantly in popularity. The first episode of Star Wars definitely had an effect on the usage of 'Leia'.
+
+```{python}
+# Q2
+name = "Leia"
+
+name_history = (
+    df
+    .filter(pl.col("name") == name)
+    .select(["year", "Total"])
+    .sort("year")
+)
+
+(
+    ggplot(name_history, aes(x="year", y="Total"))
+    + geom_line()
+    + labs(
+        x="Year",
+        y="Babies Named " + name
+    )
+    + scale_x_continuous(format=".0f")
+)
+
+```
+
+## QUESTION 3
+
+__Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?__  
+
+First of all, the name 'Mary' was pretty popular. It seems like the name 'Paul' saw a bit of growth in popularity starting in the 1940's up until the 1960's, but then it declined until the 1970's. In the 1950's the names 'Mary' and 'Paul' started losing polularity, with 'Mary' seeing an incredibly sharp decline.
+
+```{python}
+# Q3
+christian_names = ["Mary", "Martha", "Peter", "Paul"]
+
+christian_name_history = (
+    df
+    .filter(pl.col("name").is_in(christian_names))
+    .filter(pl.col("year").is_between(1920, 2000))
+    .select(["name", "year", "Total"])
+    .sort(["name", "year"])
+)
+
+(
+    ggplot(christian_name_history, aes(x="year", y="Total", color="name"))
+    + geom_line()
+    + labs(
+        title="Christian Name Usage from 1920 to 2000",
+        x="Year",
+        y="Number of Babies",
+        color="Name"
+    )
+    + scale_x_continuous(format=".0f")
+)
+
+```
+<!-- Make sure at least one of your charts includes reference marks!! -->

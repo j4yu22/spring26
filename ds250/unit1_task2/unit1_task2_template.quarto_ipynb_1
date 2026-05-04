@@ -1,0 +1,162 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "d90e6482",
+   "metadata": {},
+   "source": [
+    "---\n",
+    "title: \"Client Report - What's in a Name?\"\n",
+    "subtitle: \"Unit 1 Task 2\"\n",
+    "author: \"Jay Underwood\"\n",
+    "format:\n",
+    "  html:\n",
+    "    self-contained: true\n",
+    "    page-layout: full\n",
+    "    title-block-banner: true\n",
+    "    toc: true\n",
+    "    toc-depth: 3\n",
+    "    toc-location: body\n",
+    "    number-sections: false\n",
+    "    html-math-method: katex\n",
+    "    code-fold: true\n",
+    "    code-summary: \"Show the code\"\n",
+    "    code-overflow: wrap\n",
+    "    code-copy: hover\n",
+    "    code-tools:\n",
+    "        source: false\n",
+    "        toggle: true\n",
+    "        caption: See code\n",
+    "execute: \n",
+    "  warning: false\n",
+    "    \n",
+    "---"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "618c9400",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import polars as pl\n",
+    "import numpy as np\n",
+    "from lets_plot import *\n",
+    "\n",
+    "LetsPlot.setup_html(isolated_frame=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "f632b70b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html\n",
+    "\n",
+    "# Include and execute your code here\n",
+    "df = pl.read_csv(\"https://posit.byui.edu/content/0d43d66f-d3b7-4c43-8c36-52e3ed69e7f1/names_year_csv.csv\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0ab682b9",
+   "metadata": {},
+   "source": [
+    "## QUESTION 1\n",
+    "\n",
+    "<!-- Make sure at least one of your charts includes reference marks!! -->\n",
+    "\n",
+    "__How does your name at your birth year compare to its use historically? Your must provide a chart. The years labels on your charts should not include a comma.__ \n",
+    "\n",
+    "_type your results and analysis here_"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "4b331c51",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Q1\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e7efac5e",
+   "metadata": {},
+   "source": [
+    "## QUESTION 2\n",
+    "\n",
+    "__Think of a unique name from a famous movie. Plot the usage of that name and see how changes line up with the movie release. Does it look like the movie had an effect on usage?__  \n",
+    "\n",
+    "_type your results and analysis here_"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "badde082",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Q2\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a6ddb05d",
+   "metadata": {},
+   "source": [
+    "## QUESTION 3\n",
+    "\n",
+    "__Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?__  \n",
+    "\n",
+    "_type your results and analysis here_"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "4674b6b5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Q3\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4fe8a2c3",
+   "metadata": {},
+   "source": [
+    "<!-- Make sure at least one of your charts includes reference marks!! -->"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3",
+   "path": "O:\\Coding\\python\\share\\jupyter\\kernels\\python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
