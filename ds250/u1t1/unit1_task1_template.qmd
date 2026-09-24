@@ -110,12 +110,10 @@ Olivia was the most common female name in Utah in 2024. I set a couple variables
 # Q5
 recent_year = df.select(pl.col("year").max()).item()
 
-droppable_columns = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX","VA","VT","WA","WI","WV","WY", "Total"]
-
 name = (
   df
   .filter(pl.col("year") == recent_year)
-  .drop(droppable_columns)
+  .select(pl.col("name", "year", "UT"))
   .sort(pl.col("UT"), descending=True)
   .head(10)
 )
