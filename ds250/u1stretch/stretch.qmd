@@ -1,0 +1,97 @@
+---
+title: "Unit 1 Stretch Task"
+subtitle: "Elliot"
+author: "Jay Underwood"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+
+```{python}
+import polars as pl
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+
+df = pl.read_csv("names_year_csv.csv")
+```
+
+# Best attempt at Elliot Chart:
+
+
+```{python}
+name = "Elliot"
+
+name_history = (
+    df
+    .filter(pl.col("name") == name)
+    .select(["year", "Total"])
+    .sort("year")
+    .filter(pl.col("year") >= 1950)
+)
+
+releases = {
+    "year": [1982, 1985, 2002],
+    "label": ["E.T. Released", "Second Release", "Third Release"]
+}
+
+(
+    ggplot(name_history, aes(x="year", y="Total"))
+    + geom_line(color="Blue", manual_key="Elliot")
+    + labs(
+        title="Elliot...What?",
+        x="year",
+        y="",
+        manual="name",
+        font="Times New Roman"
+    )
+    + geom_vline(
+        xintercept=1982,
+        color="Red",
+        linetype="dashed",
+        layer_key="E.T. Released"
+        )
+    + geom_vline(
+        xintercept=1985,
+        color="Red",
+        linetype="dashed",
+        label="Second Release"
+    )
+    + geom_vline(
+        xintercept=2002,
+        color="Red",
+        linetype="dashed",
+        label="Third Release"
+    )
+    + geom_text(
+        data=releases,
+        mapping=aes(x="year", label="label"),
+        y=name_history["Total"].max() * 0.9,
+        inherit_aes=False,
+        family="Times New Roman"
+    )
+    + scale_x_continuous(format=".0f")
+    + scale_y_continuous(format=".0f")
+    + theme_gray()
+)
+```
