@@ -72,7 +72,7 @@ releases = {
         layer_key="E.T. Released"
         )
     + geom_vline(
-        xintercept=1985,
+        xintercept=1984,
         color="Red",
         linetype="dashed",
         label="Second Release"
@@ -93,5 +93,11 @@ releases = {
     + scale_x_continuous(format=".0f")
     + scale_y_continuous(format=".0f")
     + theme_gray()
+    + theme(
+        text=element_text(family="Times New Roman"),
+        legend_justification="top",
+
+    )
+    + ggsize(1000, 500)
 )
 ```
