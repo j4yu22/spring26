@@ -1,0 +1,84 @@
+---
+title: "Untitled"
+format: html
+---
+
+Key things I think would be helpful to show in this class:
+
+- pivot and unpivot
+    - not necessary, but a good time to discuss implicit vs. explicit missing values
+- name.map(lambda function)
+- show facet wraps again
+
+```{python}
+import polars as pl
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+
+df = pl.read_csv('https://byuistats.github.io/M335/data/rcw_reshape.csv')
+
+```
+
+This data was collected from the first few semesters that the R&CW was run at the university level. It counts how many projects/entries were made in each semester from each department.
+
+Is the data in long or wide format? How can you tell? 
+
+Convert it to wide with a `pivot()`:
+
+```{python}
+
+df_wide = df.
+
+df_wide
+```
+
+Convert it back to long with unpivot():
+
+```{python}
+df_long = df_wide.
+
+df_long
+```
+
+### Discussion/Observation:
+
+* *How many rows does the new long format have? *
+
+* *How does that compare with the original data? Why?*
+
+*  *Discuss: When might you want to make implicit NA's explicit? Why would you not?*
+
+
+# plotting
+
+Create a plot to look at how many projects were entered each semester by each department.
+
+```{python}
+(
+
+)
+```
+
+Do you see any issues with the plot? What do you think is causing the problem?
+
+Fix the issue and try plotting again.
+
+
+```{python}
+
+(
+
+)
+```
+
+It's a bit busy, maybe we can break it out into small multiples. In other words a different plot for each Department. 
+
+
+```{python}
+(
+
+)
+```
+
