@@ -1,0 +1,128 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{python}
+import polars as pl
+import requests #new for reading in JSON
+import io       #new for reading in JSON
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+```
+
+
+Key skills to learn:
+
+- Missing values: 
+
+    - How to recognize them (None, null). 
+    - Null vs. NaN
+    - fill_null() and fill_nan() options, including strategy = 
+
+- How to replace values in a dataframe, generically
+
+    - pl.where().then().otherwise(). Useful for ranges
+    - replace strings and numbers, variations (str.replace, str.replace_all, replace_strict). Don't get into regex yet.
+
+This is more than you will need for the homework. 
+
+```{python}
+df = pl.DataFrame({
+    "A": ["X", "B", "C", "X", None],
+    "B": [1, 2, 3, 1, -999],
+    "C": ["apple", "banana", "cherry", "apple", "n/a"]
+})
+
+df
+```
+
+__How can you change the n/a and the -999 to missing?__
+
+```{python}
+clean = df.with_columns(
+    (pl.col('B').replace(-999, None))
+)
+
+clean
+```
+
+# Filling in missing values
+
+Why would you need to fill in missing values?
+
+How can they change the outcome of the statistics or the models?
+
+Need to address Null vs. NaN
+
+Because they mean different things:
+
+null → data missing from source. Can be present in any datatype column
+
+NaN → computation produced nonsense (like dividing by zero, or log of a negative). This only applies to float columns
+
+Treating them separately prevents silent logic bugs.
+
+To handle both:
+
+```{python}
+df1 = pl.DataFrame({
+     "a": [1, 2, None, 3]
+    ,"b": [1.0, 2, float("nan"), None]
+    ,"c": [-999, 5, None, 11]
+})
+
+```
+
+__How can you fill in missing values with non hardcoded value, like the mean or median?__
+
+
+```{python}
+
+```
+
+```{python}
+
+
+```
+
+When would you use a mean vs. forward or backward strategy?
+
+Which of these strategies do you think would be most appropriate for a column representing "Daily Temperature" where a sensor might have cut out for just an hour or two? 
+
+__Answer:__
+
+Forward or backward is also good for discrete or binary data where a decimal value would be non-sense. Just ensure your data isn't sorted in some way related to the variable you are filling in (called imputing).
+
+
+This code will be needed for the task.
+
+```{python}
+import json
+
+
+whole_thing = df.to_dicts()
+print(json.dumps(whole_thing, indent = 2))
+one_row = df[0].to_dicts() #in the task, don't output the whole dataset, just 1 line
+
+#OR
+df.write_json()
+print(df.write_ndjson()) #newline delimited JSON
+# How would you print just one line and not the whole dataset?
+```
+
+
+# Summary
+
+New
+
+- replace and it's variants
+- fill_null()
+- fill_nan()
+
+old code: using pl.when().then().otherwise()
+
+Workflow: convert bad values to missing values first. Then, in a separate step fill those missing values. 
+Circumstances appropriate for various strategies

@@ -1,0 +1,178 @@
+---
+title: "Untitled"
+format: html
+---
+
+If you want to use the ufo data, you can give your students these two code cells listed at the buttom. The ufo data is column oriented, which polars can't handle (yet?). So read in using pandas and then convert to a polars dataframe.
+
+The rest of the example though is built on a different dataset about housing. Hopefully this links works for everyone. If not, I provided the url to the website I got the link from and you could get your own link.
+
+
+```{python}
+import polars as pl
+import requests #new for reading in JSON
+import io       #new for reading in JSON
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+```
+
+```{python}
+
+# I obtained this data from: https://www.agentsfordata.com/json/sample
+
+url = "https://byuidatascience.github.io/DS250-Course-Polars/Data/house-price.json"
+
+# Use the requests library to send an HTTP GET request to that URL.
+# The result (response) contains the server’s reply, including the file contents.
+# The actual bytes of the file are in response.content.
+response = requests.get(url)
+
+# response.content is raw bytes, not a file.
+# io.BytesIO(...) wraps those bytes in a file-like object in memory, which Polars can read from.
+# pl.read_json(...) parses the JSON and loads it into a Polars DataFrame called df.
+houses = pl.read_json(io.BytesIO(response.content))
+```
+
+
+```{python}
+houses.head()
+```
+Maybe show them what is in response, before going to response.content.
+
+Key skills to learn:
+
+- structure of json file and reading it in (note polars doesn't read in column oriented json files)
+- conditional logic:  when().then().otherwise()
+- expression expansion
+- case selectors (optional) and/or a little regex
+
+## Structure of JSON
+
+JSON data is often a common method to return data through web API. This is because it is just a flat text file. Let's go look at the housing data in its JSON form.
+
+JSON has some advantages relative to other choices:
+it has a similar structure to a python dictionary, making it easy to read and interpret to the human eye. 
+In this case, each row (also called a record in JSON) is encapsulated in curly braces. Some json data can be column oriented, which tends to give polars problems. In that case, you may have to read it in with a different approach (pandas?).
+It also handles sparse data very well. In a csv, you would need a comma for each and every column, in json, it just doesn't list it. So you only have to mention the data that is there.
+
+## Conditional logic for creating new columns
+
+Use the furnished status to apply a price penalty (i.e. a price bump) to those that are unfurnished, and a different one for those that are semi-furnished
+```{python}
+
+adjusted = houses.with_columns(
+      adj_price = pl.when(pl.col('furnishingstatus') == "unfurnished")
+                    .then(pl.col('price') + 5000 * pl.col('area') / 1000)
+                    .when(pl.col('furnishingstatus') == "semi-furnished")
+                    .then(pl.col('price') + 2000 * pl.col('area')/1000)
+                    #Leave this off first
+                    .otherwise(pl.col('price'))
+    )
+
+```
+
+## Selecting columns and expression expansion (again)
+
+First, let's just select the numeric columns. 
+
+Then we will divide the price and adjusted price by 1000 so that they are measured in thousands of dollars.
+
+Just get the numeric ones. Build this code up one line at a time
+```{python}
+(
+adjusted.select(pl.col([pl.Float64, pl.Int64]))
+        #.with_columns(pl.col(['price', 'adj_price']) / 1000) # do this first, then add the suffix
+        .with_columns((pl.col(['price', 'adj_price']) / 1000).name.suffix("_k"))
+)
+```
+
+
+### selectors package
+
+There is a library you can use which relies on plain english and is very intuitive to refer to columns.
+
+Let's repeat what we did in the previous code cell, but this time use the selectors package.
+
+
+```{python}
+import polars.selectors as cs #cs stands for column selectors??
+
+adjusted.with_columns((cs.contains('price') / 1000)
+                       .name.suffix("_k"))
+
+#You can also use it to do our selection of numeric stuff too
+adjusted.select(cs.numeric())
+```
+
+
+### Changing data types
+
+One other skill you will need is to change a variable's data type
+
+```{python}
+df_dumb = adjusted.with_columns(pl.col('bedrooms').cast(pl.String))
+undone = df_dumb.with_columns(pl.col('bedrooms').cast(pl.Int64))
+undone
+```
+
+### Fun plotting
+
+Just some fun plotting at the end. Get them to experience other geoms
+```{python}
+(
+    ggplot(data = df_dumb, mapping = aes(x = 'bedrooms', y = 'area')) + geom_boxplot(outlier_alpha=0) + geom_jitter(color = "blue")
+)
+```
+
+```{python}
+(
+    ggplot(data = undone, mapping = aes(x = 'bedrooms', y = 'area')) + geom_violin() 
+)
+```
+
+```{python}
+
+(
+    ggplot(data = undone, mapping = aes(x = 'area')) 
+    + geom_density() 
+    + facet_grid(y = 'bedrooms')
+)
+```
+
+```{python}
+#Based on the sample sizes, the density plots for 1, and 6 bedroom houses (and potentially 5 as well) are not very trustworthy
+(
+undone#.with_columns(pl.col('bedrooms').cast(pl.String))
+      .group_by('bedrooms')
+      .count()
+      .sort('bedrooms')
+)
+```
+
+
+##########
+### Getting in UFO data
+
+
+```{python}
+#import sys
+#!{sys.executable} -m pip install requests
+# %%
+# The usuals
+import pandas as pd
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+```
+
+```{python}
+# %%
+# UFO Sightings
+url = "https://byuistats.github.io/DS250-Course/Skill%20Builders/json_missing.json"
+df = pd.read_json(url)
+pl_df = pl.from_pandas(df)
+pl_df
+```
