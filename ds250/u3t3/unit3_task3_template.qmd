@@ -1,0 +1,158 @@
+---
+title: "Client Report - Joins"
+subtitle: "Unit 3 Task 3"
+author: "Jay Underwood"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+```{python}
+import polars as pl
+import numpy as np
+import sqlite3
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True)
+_ = pl.Config.set_tbl_rows(20).set_fmt_float("full")
+```
+
+
+```{python}
+# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html
+
+# Include and execute your code here
+sqlite_file = 'lahmansbaseballdb.sqlite'
+# this file must be in the same location as your .qmd or .py file
+con = sqlite3.connect(sqlite_file)
+```
+
+## QUESTION 1
+
+__Write an SQL query that pulls in the the salaries table and the collegeplaying table (and any other tables you might need) and store them in polars dataframes. In Python Polars, combine the dataframes to create a list of baseball players who attended BYU-Idaho. The new table should contain five columns: playerID, schoolID, salary, yearID and teamID associated with each salary.__
+
+I found 15 salary records for two players who attended BYU-Idaho, Matt Lindstrom and Garrett Stephenson. I removed repeated college attendance records before joining by playerID so each salary only appeared once. The yearID in the final table is the salary year, not the college year.
+
+_AI use reflection_
+**Link** to the original chat:
+**The Process** How exactly did you use the tool?
+**The Impact**  How did using AI impact your learning?
+
+```{python}
+# Include and execute your code here
+salaries = pl.read_database(
+    "SELECT playerID, salary, yearID, teamID FROM salaries",
+    con
+)
+collegeplaying = pl.read_database(
+    "SELECT playerID, schoolID FROM collegeplaying",
+    con
+)
+schools = pl.read_database(
+    "SELECT schoolID, name_full FROM schools",
+    con
+)
+
+byui_players = (
+    collegeplaying
+    .join(schools, on="schoolID", how="inner")
+    .filter(pl.col("name_full") == "Brigham Young University-Idaho")
+    .select(["playerID", "schoolID"])
+    .unique()
+)
+
+q1 = (
+    byui_players
+    .join(salaries, on="playerID", how="inner")
+    .select(["playerID", "schoolID", "salary", "yearID", "teamID"])
+    .sort(["playerID", "yearID", "teamID"])
+)
+
+q1
+
+```
+
+
+## QUESTION 2
+
+1. Pick any two baseball teams and compare them using a metric of your choice (average salary, home runs, number of wins, etc). Be creative! Write an SQL query to read in the table(s) you need, then use polars to manipulate the data. Finally, make a graph using Lets-Plot to visualize the comparison. What do you learn?
+
+I compared the Yankees and Oakland Athletics from 2000 to 2016. The Yankees averaged about $6.6 million per player and 93.6 wins per season, compared with Oakland's about $2.11 million and 85.9 wins. However, both won 103 games in 2002 even though Oakland paid much less. Spending more did not guarantee more wins, and this comparison cannot prove that money caused winning.
+
+_AI use reflection_
+**Link** to the original chat:
+**The Process** How exactly did you use the tool?
+**The Impact**  How did using AI impact your learning?
+
+```{python}
+# Include and execute your code here
+teams = pl.read_database(
+    "SELECT yearID, teamID, name, W FROM teams",
+    con
+)
+
+# used the salaries dataframe from question 1
+q2 = (
+    salaries
+    .filter(
+        pl.col("teamID").is_in(["NYA", "OAK"])
+        & pl.col("yearID").is_between(2000, 2016)
+    )
+    .group_by(["teamID", "yearID"])
+    .agg(pl.col("salary").mean().alias("average_salary"))
+    .join(teams, on=["teamID", "yearID"], how="inner")
+    .with_columns(
+        (pl.col("average_salary") / 1_000_000).alias("average_salary_millions")
+    )
+    .sort(["name", "yearID"])
+)
+
+# give each season equal weight when summarizing the teams
+team_summary = (
+    q2
+    .group_by("name")
+    .agg(
+        pl.len().alias("seasons"),
+        pl.col("average_salary_millions").mean().round(2).alias("mean_salary_millions"),
+        pl.col("W").mean().round(1).alias("mean_wins")
+    )
+    .sort("name")
+)
+
+team_summary
+
+(
+    ggplot(q2, aes(x="average_salary_millions", y="W", color="name"))
+    + geom_point(
+        size=4
+    )
+    + labs(
+        title="Do higher salaries mean more wins?",
+        subtitle="Seasons of Yankees vs. Athletics, 2000-2016",
+        x="Average player salary (millions of dollars)",
+        y="Regular season wins",
+        color="Team",
+    )
+    + scale_color_manual(values=["#1b365d", "#2a7f46"])
+    + scale_y_continuous(format=".0f")
+)
+
+```
